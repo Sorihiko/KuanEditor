@@ -1,0 +1,30 @@
+/* 时间轴 */
+/* timeline */
+.p-tl .ptabs{align-items:center;gap:8px;flex-wrap:wrap;padding:3px 8px}
+.p-tl .tc{font-size:14px}
+.tlinfo{font-family:var(--mono);font-size:11px;color:var(--muted);flex:1 1 220px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tlscroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;position:relative}
+.tlgrid{display:grid;grid-template-columns:184px minmax(0,1fr);grid-template-rows:30px auto;align-content:start;min-height:100%}
+.rhead{position:sticky;top:0;z-index:3;height:30px;background:var(--panel2);border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 8px}
+.rcv{position:sticky;top:0;z-index:2;height:30px;display:block;width:100%;background:var(--panel2);border-bottom:1px solid var(--line);touch-action:none}
+.theads{border-right:1px solid var(--line);display:flex;flex-direction:column}
+.trh{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 6px 0 8px;border-bottom:1px solid var(--line);background:var(--panel);min-width:0;cursor:pointer}
+.trh.on{background:var(--panel3)}
+.trh .nm{display:flex;align-items:center;gap:4px;font-size:12px;min-width:0}
+.trh .nm b{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;flex:none}
+.trh .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;outline:none;flex:1;min-width:0}
+.trh .nm .ib{flex:none}
+.trh .nm .mv{display:flex;flex:none}
+.trh .nm .mv .ib{width:14px}
+.trh .ct{display:flex;gap:3px;align-items:center}
+.trh select{padding:0 3px;font-size:10px;height:18px;width:auto;flex:1;min-width:58px}
+.trh .ib{width:18px;height:18px}
+.trh .ib svg{width:11px;height:11px}
+.trh.lyric{background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.trh.sndt{background:color-mix(in srgb,#4f86b8 8%,var(--panel))}
+.th.snd{display:grid;place-items:center;font-size:26px;color:var(--muted)}
+.trh.partt{background:color-mix(in srgb,#2f9c8c 8%,var(--panel))}
+.trh.impt{background:color-mix(in srgb,#8aa05a 8%,var(--panel))}
+#styleSeg{grid-template-columns:repeat(5,minmax(0,1fr))}
+.trh.spect{background:color-mix(in srgb,#7b62d1 8%,var(--panel))}
+.warnbox{margin:0;padding:8px 10px;border-radius:var(--r-item);background:color-mix(in srgb,var(--warn,#e0b33a) 16%,var(--panel2));border:1px solid color-mix(in srgb,var(--warn,#e0b33a) 45%,transparent);font-size:12px}

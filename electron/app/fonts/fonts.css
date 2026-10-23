@@ -1,0 +1,6 @@
+/* 本地字体（离线也能用；和网页版用的 Google Fonts 是同一套字体） */
+@font-face{font-family:"Noto Sans SC";font-weight:900;font-display:swap;src:url(NotoSansSC-Black.woff) format("woff")}
+@font-face{font-family:"Noto Serif SC";font-weight:900;font-display:swap;src:url(NotoSerifSC-Black.woff) format("woff")}
+@font-face{font-family:"Dela Gothic One";font-weight:400;font-display:swap;src:url(DelaGothicOne.woff) format("woff")}
+@font-face{font-family:"IBM Plex Sans";font-weight:100 700;font-display:swap;src:url(IBMPlexSans.woff) format("woff")}
+@font-face{font-family:"JetBrains Mono";font-weight:100 800;font-display:swap;src:url(JetBrainsMono.woff) format("woff")}

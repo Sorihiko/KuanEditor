@@ -1,0 +1,24 @@
+/* 素材箱 */
+/* project bin */
+.binbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bin{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;align-content:start}
+.mitem{position:relative;display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:var(--r-item);background:var(--panel2);padding:4px;cursor:grab;min-width:0}
+.mitem.on{border-color:var(--sel)}
+.mitem .th{aspect-ratio:16/9;max-width:100%;border-radius:var(--r-sm);background:repeating-conic-gradient(#2b2e35 0 25%,#23252b 0 50%) 0 0/12px 12px;display:grid;place-items:center;overflow:hidden}
+.mitem .th img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.mitem .nm{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mitem .sz{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.mitem .del{position:absolute;top:6px;right:6px;border:0;border-radius:var(--r-sm);background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:1px 6px;cursor:pointer;opacity:0}
+.mitem:hover .del,.mitem .del:focus-visible,.mitem .del.arm{opacity:1}
+.mitem .del.arm{background:var(--bad)}
+.mitem.missing .th::after{content:"文件丢失";font-size:11px;color:var(--bad)}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;border:1px dashed var(--line);border-radius:var(--r-item);padding:20px 10px;min-height:180px}
+.empty svg{width:40px;height:40px;stroke:var(--muted);fill:none;stroke-width:1.5}
+.empty b{font-size:13px}
+.drop.over,.empty.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.files{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;font-size:12px;margin:0}
+.files dt{color:var(--muted)}.files dd{margin:0;overflow-wrap:anywhere;font-family:var(--mono);font-size:11px}
+.files dd.none{color:var(--muted);font-family:var(--body)}
+.drop{border:1px dashed var(--line);border-radius:var(--r-item);padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.drop p{margin:0;color:var(--muted);font-size:12px}
+

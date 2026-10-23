@@ -1,0 +1,10 @@
+/* 工具栏 */
+/* tools */
+.tools{display:flex;flex-direction:column;gap:4px;align-items:center;padding:6px 0;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel)}
+.tool{width:30px;height:30px;border-radius:var(--r-tool);border:1px solid transparent;background:none;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.tool svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tool:hover{background:var(--panel3);color:var(--fg)}
+.tool[aria-pressed="true"]{background:var(--sel);color:#fff}
+.tool.tog[aria-pressed="true"]{background:none;border-color:var(--sel);color:var(--sel)}
+.tools hr{width:22px;border:0;border-top:1px solid var(--line);margin:3px 0}
+

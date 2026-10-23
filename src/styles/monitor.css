@@ -1,0 +1,26 @@
+/* 节目监视器 */
+/* program monitor */
+.screenbox{flex:1;min-height:0;display:grid;place-items:center;padding:8px;background:#0a0a0c;position:relative}
+.screen{position:relative;background:#000;outline:1px solid var(--line)}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.screen .corner{position:absolute;left:8px;top:6px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);pointer-events:none}
+.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border-top:1px solid var(--line)}
+.audioctl{display:flex;align-items:center;gap:6px}
+.audioctl input[type=range]{width:84px}
+.audioctl .volval{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:34px}
+.audioctl select.mini{margin-left:2px}
+.ib.mute svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ib.mute svg path:first-child{fill:currentColor}
+.ib.mute[aria-pressed="true"]{color:var(--bad)}
+.tc{font-family:var(--mono);font-size:16px;color:var(--sel);font-variant-numeric:tabular-nums}
+.tc small{font-size:11px;color:var(--muted);margin-left:6px}
+.play{width:34px;height:34px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;cursor:pointer;flex:none}
+.play svg{width:15px;height:15px;fill:currentColor}
+.pill{font-size:10px;padding:1px 7px;border-radius:999px;color:#fff;flex:none}
+
+.screenbox.fs{padding:0;background:#000}
+.screenbox.fakefs{position:fixed;inset:0;z-index:100}
+.screenbox.fs .screen{outline:none}
+.screenbox.fs .corner{display:none}
+.fshint{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:5px 12px;border-radius:999px;pointer-events:none;transition:opacity .4s}
+.fshint.gone{opacity:0}
