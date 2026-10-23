@@ -1,0 +1,23 @@
+/* 效果控件 */
+/* effect controls */
+.fx-h{display:flex;flex-direction:column;gap:2px}
+.fx-h b{font-size:13px;overflow-wrap:anywhere}
+.fx-h span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.fx-sec{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;border-top:1px solid var(--line);padding-top:8px}
+.prow{display:grid;grid-template-columns:22px 62px minmax(0,1fr) auto;gap:6px;align-items:center}
+.prow .pn{font-size:12px;cursor:ew-resize;user-select:none;white-space:nowrap}
+.prow .vals{display:flex;gap:4px;min-width:0}
+.prow .vals input{padding:3px 5px;font-family:var(--mono);font-size:12px;color:var(--sel)}
+.prow .vals input[type=color]{padding:0;height:24px;border:1px solid var(--line);background:none;border-radius:var(--r-ctl);cursor:pointer}
+.ib{width:22px;height:22px;border:0;border-radius:var(--r-sm);background:none;display:grid;place-items:center;cursor:pointer;color:var(--muted);padding:0}
+.ib svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ib:hover{background:var(--panel3);color:var(--fg)}
+.ib[aria-pressed="true"]{color:var(--sel)}
+.ib.kf[aria-pressed="true"] svg{fill:var(--sel)}
+.ib:disabled{opacity:.3;cursor:default}
+.kfn{display:flex;gap:0}
+.erow{display:grid;grid-template-columns:22px 62px minmax(0,1fr);gap:6px;align-items:center;font-size:11px;color:var(--muted)}
+.erow select{padding:2px 5px;font-size:11px}
+.preset{display:flex;gap:4px;flex-wrap:wrap}
+.preset button{flex:1}
+

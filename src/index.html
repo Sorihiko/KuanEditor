@@ -1,0 +1,248 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>宽 Kuan Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@900&family=Noto+Serif+SC:wght@900&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>try{var t=localStorage.getItem("kuan-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<!-- @styles -->
+
+<div class="app">
+  <header class="bar">
+    <div class="brand"><h1><b>宽</b></h1><span>osu! storyboard editor</span></div>
+    <div class="mapinfo" id="mapinfo"></div>
+    <div class="acts">
+      <span class="foldchip" id="foldChip" hidden></span>
+      <button class="btn" id="saveTop" type="button" title="保存到谱面文件夹（Ctrl+S）" hidden>保存</button>
+      <button class="ghost" id="wsBtn" type="button" title="切换、重置或保存面板布局">工作区 ▾</button>
+      <button class="ghost fsbtn" id="fsBtn" type="button" title="全屏预览 storyboard（F，Esc 退出）"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M12 3h5v5M17 12v5h-5M8 17H3v-5"/></svg>全屏预览</button>
+    </div>
+  </header>
+
+  <section class="panel p-proj" aria-label="项目">
+    <div class="ptabs" role="tablist">
+      <button role="tab" type="button" data-pane="pane-bin" aria-selected="true">素材</button>
+      <button role="tab" type="button" data-pane="pane-lrc" aria-selected="false">歌词</button>
+      <button role="tab" type="button" data-pane="pane-map" aria-selected="false">谱面</button>
+      <button role="tab" type="button" data-pane="pane-gen" aria-selected="false" id="tab-gen">新建</button>
+    </div>
+    <div class="pbody">
+      <section class="pane" id="pane-bin">
+        <div class="binbar">
+          <button class="ghost" id="importImg" type="button">导入图片…</button>
+          <button class="ghost" id="importSeq" type="button" title="选多张按编号命名的图片，合成一个帧动画">导入序列帧…</button>
+          <button class="ghost" id="importSnd" type="button" title="导入 .wav / .ogg / .mp3 作为 storyboard 音效">导入音效…</button>
+          <span class="hint" id="binCount"></span>
+        </div>
+        <input id="imgIn" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+        <input id="seqIn" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+        <input id="sndIn" type="file" accept="audio/*,.wav,.ogg,.mp3" multiple hidden>
+        <div class="empty" id="binEmpty">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="9" y="6" width="20" height="25" rx="2"/><rect x="13" y="10" width="20" height="25" rx="2"/><circle cx="10" cy="26" r="5"/><path d="M10 23.5v5M7.5 26h5"/></svg>
+          <b>添加媒体</b>
+          <span class="hint">把图片拖到这里，或导入后拖到时间轴的图片轨道</span>
+          <button class="pill-btn" id="importImg2" type="button">导入图片</button>
+        </div>
+        <div class="bin" id="bin" role="list"></div>
+        <p class="hint">双击素材可加到当前选中的轨道，位置在播放头。图片会存在这个浏览器里，刷新后仍在。</p>
+        <div id="folderImgs" hidden><div class="h3">谱面文件夹里的图片</div><div class="flist" id="flist"></div></div>
+      </section>
+      <section class="pane" id="pane-gen" hidden>
+        <div class="genlist" id="genList"></div>
+        <p class="hint">点一下在播放头添加；效果也可以直接拖到时间轴上想要的时间。粒子的预设（下雪、下雨、吸入、环绕…）在右边效果控件里换。时间轴空白处右键、左边工具栏的 ＋ 也能新建。</p>
+      </section>
+      <section class="pane" id="pane-lrc" hidden>
+        <textarea id="lrc" spellcheck="false" aria-label="歌词（LRC）"></textarea>
+        <p class="hint">也可以直接拖入 .srt / .ass / .ssa / .sbv 字幕（.ass 的 \k 卡拉OK时间会变成逐字时间）。<code>/</code> 换行，<code>*词*</code> 强调。空时间标签 <code>[01:02.00]</code> 结束上一句。支持逐字 LRC 和网易云 yrc。</p>
+        <div class="row">
+          <label class="f" for="offset">歌词偏移 (ms)<input id="offset" type="number" step="10" value="0"></label>
+          <label class="f" for="snapDiv">节拍细分
+            <select id="snapDiv"><option value="0">不吸附</option><option value="1">1/1</option><option value="2" selected>1/2</option><option value="3">1/3</option><option value="4">1/4</option><option value="6">1/6</option><option value="8">1/8</option></select>
+          </label>
+        </div>
+        <div class="row">
+          <label class="f" for="snapTo">句首吸附到
+            <select id="snapTo"><option value="beat">拍子</option><option value="note">最近的 note</option></select>
+          </label>
+          <label class="f" for="charMode">逐字时间
+            <select id="charMode"><option value="note">歌词自带，没有就跟 note</option><option value="lyric">只用歌词自带的</option><option value="off">不用，平均分配</option></select>
+          </label>
+        </div>
+        <p class="hint" id="charHint"></p>
+        <div class="row" id="folderLrc" hidden></div>
+      </section>
+      <section class="pane" id="pane-map" hidden>
+        <div class="h3">谱面文件夹</div>
+        <div class="row">
+          <button class="btn primary" id="openFolder" type="button">打开谱面文件夹…</button>
+          <button class="ghost" id="reconnect" type="button" hidden></button>
+        </div>
+        <p class="hint" id="folderInfo"></p>
+        <div class="row" id="folderActs" hidden>
+          <button class="btn primary" id="saveFolder" type="button">保存到文件夹（Ctrl+S）</button>
+          <button class="ghost" id="closeFolder" type="button">断开</button>
+        </div>
+        <label class="chk" id="autoSaveRow" hidden><input id="autoSave" type="checkbox"> 改动后自动保存</label>
+        <div class="row" id="folderProj" hidden></div>
+        <span class="hint" id="saveState"></span>
+        <label class="f" for="diffSel">当前难度（预览、击打特效、难度专属轨道都按它）<select id="diffSel"></select></label>
+        <div class="h3">手动载入</div>
+        <div class="drop" id="drop">
+          <p>拖入 <code>.osu</code>、<code>.lrc</code> / <code>.srt</code> / <code>.ass</code> 字幕、<code>.osb</code>、音频；图片会进素材库</p>
+          <div class="row" style="width:100%">
+            <button class="ghost" id="pick" type="button">选择文件…</button>
+            <button class="ghost" id="loadSample" type="button">恢复示例</button>
+          </div>
+          <input id="fileIn" type="file" multiple hidden accept=".osu,.osb,.kuan,.lrc,.txt,.srt,.ass,.ssa,.sbv,audio/*,image/*">
+        </div>
+        <dl class="files" id="files"></dl>
+        <div class="row">
+          <button class="ghost" id="pickBg" type="button">设置预览背景图…</button>
+          <button class="ghost" id="clearBg" type="button">去掉预览背景</button>
+        </div>
+        <input id="bgIn" type="file" accept="image/*" hidden>
+        <p class="hint">预览背景只用来对照，不会导出。</p>
+        <div class="h3">项目文件</div>
+        <div class="row">
+          <button class="ghost" id="saveProj" type="button">保存项目文件</button>
+          <button class="ghost" id="openProj" type="button">打开项目文件…</button>
+        </div>
+        <input id="projIn" type="file" accept=".kuan,application/json" hidden>
+        <p class="hint">.kuan 文件里有全部设置、歌词、导入的图片、音效、帧动画和导入的 .osb，换浏览器、换电脑都能接着做。连着谱面文件夹时，保存会顺便把它存进文件夹。</p>
+        <div class="h3">背景与已有 storyboard</div>
+        <div class="row">
+          <button class="ghost" id="bgTl" type="button">谱面背景 → 时间轴</button>
+          <button class="ghost" id="importOsb" type="button">导入 .osb…</button>
+        </div>
+        <input id="osbIn" type="file" accept=".osb" multiple hidden>
+        <p class="hint">导入的 .osb 会原样保留，跟 Kuan 做的内容一起导出，可以整体平移时间。打开谱面文件夹时，里面原有的 .osb 会自动导入，避免被覆盖。</p>
+        <div class="h3">预览</div>
+        <label class="chk"><input id="showNotes" type="checkbox" checked> 显示 note</label>
+        <label class="f" for="noteAlpha">note 不透明度<input id="noteAlpha" type="range" min="0" max="100"></label>
+        <label class="f" for="pvBg">背景图亮度<input id="pvBg" type="range" min="0" max="100"></label>
+        <label class="f" for="pvState">Pass / Fail 图层看哪个<select id="pvState"><option value="pass">玩家“通过”时的画面（显示 Pass 图层）</option><option value="fail">玩家“失败”时的画面（显示 Fail 图层）</option></select></label>
+        <p class="hint">这几项只影响编辑器里的预览，不会导出。</p>
+      </section>
+    </div>
+  </section>
+
+  <nav class="tools" aria-label="工具">
+    <button class="tool" id="toolSel" type="button" title="选择工具（V）" aria-pressed="true"><svg viewBox="0 0 20 20"><path d="M5 3l10 6-4.5 1.2L13 16l-2 1-2.4-5.6L5 14z"/></svg></button>
+    <button class="tool" id="toolRazor" type="button" title="剃刀：在图片片段上点击切开（C）" aria-pressed="false"><svg viewBox="0 0 20 20"><path d="M4 15l9-9 3 3-9 9H4z"/><path d="M11 8l3 3"/></svg></button>
+    <button class="tool" id="toolHand" type="button" title="抓手：拖动时间轴（H）" aria-pressed="false"><svg viewBox="0 0 20 20"><path d="M7 10V5a1.2 1.2 0 0 1 2.4 0v4M9.4 9V3.8a1.2 1.2 0 0 1 2.4 0V9M11.8 9V4.8a1.2 1.2 0 0 1 2.4 0V11c0 3.5-2 6-5 6-2.2 0-3.4-1-4.6-3L3 10.8a1.2 1.2 0 0 1 2-1.2L7 12"/></svg></button>
+    <hr>
+    <button class="tool tog" id="toolMagnet" type="button" title="吸附（S）" aria-pressed="true"><svg viewBox="0 0 20 20"><path d="M5 4v6a5 5 0 0 0 10 0V4"/><path d="M5 4h3v6a2 2 0 0 0 4 0V4h3M5 7h3M12 7h3"/></svg></button>
+    <button class="tool" id="toolAddTrack" type="button" title="新建轨道 / 效果"><svg viewBox="0 0 20 20"><rect x="3" y="5" width="14" height="10" rx="2"/><path d="M10 7.5v5M7.5 10h5"/></svg></button>
+  </nav>
+
+  <main class="dock" id="dock"></main>
+
+  <section class="panel p-mon" aria-label="节目监视器">
+    <div class="ptabs"><span class="ttl">预览</span><span class="sp"></span><span class="ttl monsize" style="color:var(--muted);font-family:var(--mono);font-size:11px">854 × 480</span></div>
+    <div class="screenbox" id="screenbox"><div class="screen" id="screen"><canvas id="cv"></canvas><div class="corner">Foreground · 4:3 安全区虚线</div></div><div class="fshint" id="fsHint" hidden>Esc 退出全屏 · 空格 播放 / 暂停</div></div>
+    <div class="transport">
+      <span class="tc" id="tc">00:00:000<small id="beatInfo"></small></span>
+      <button class="ghost" id="prevL" type="button" aria-label="上一句">‹ 上一句</button>
+      <button class="play" id="play" type="button" aria-label="播放"><svg viewBox="0 0 20 20" id="playIcon"><path d="M5 3l12 7-12 7z"/></svg></button>
+      <button class="ghost" id="nextL" type="button" aria-label="下一句">下一句 ›</button>
+      <div class="audioctl" role="group" aria-label="音频">
+        <button class="ib mute" id="muteBtn" type="button" aria-label="静音" aria-pressed="false"></button>
+        <input id="vol" type="range" min="0" max="100" step="1" aria-label="音量">
+        <span class="volval" id="volVal"></span>
+        <select id="rateSel" class="mini" aria-label="播放速度" title="播放速度（不变调）"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1">1×</option></select>
+        <label class="chk mini" title="在画面里画出 4:3 安全区的虚线框"><input id="guide" type="checkbox" checked> 安全区</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel p-fx" aria-label="效果控件">
+    <div class="ptabs" role="tablist">
+      <button role="tab" type="button" data-pane="pane-fx" aria-selected="true" id="tab-fx">效果控件</button>
+      <button role="tab" type="button" data-pane="pane-style" aria-selected="false" id="tab-style">字幕样式</button>
+      <button role="tab" type="button" data-pane="pane-out" aria-selected="false" id="tab-out">导出</button>
+    </div>
+    <div class="pbody">
+      <section class="pane" id="pane-fx"><div id="fxBody" class="pane"></div></section>
+      <section class="pane" id="pane-style" hidden>
+        <div class="scope" id="styleScope" aria-live="polite"></div>
+        <div class="row" style="align-items:end">
+          <label class="f" for="seed">种子<input id="seed" type="number" value="2027"></label>
+          <button class="btn primary" id="dice" type="button" style="flex:0 0 auto">一键随机</button>
+        </div>
+        <div class="seg" id="styleSeg" role="group" aria-label="排版风格">
+          <button type="button" data-v="slam">冲击</button><button type="button" data-v="scatter">散字</button>
+          <button type="button" data-v="vertical">竖排</button><button type="button" data-v="karaoke">卡拉OK</button><button type="button" data-v="mix">混合</button>
+        </div>
+        <div class="swatches" id="swatches" role="group" aria-label="配色"></div>
+        <div class="custompal" id="customPal" hidden>
+          <label class="cp"><input id="cText" type="color" aria-label="自定义文字颜色"> 文字</label>
+          <label class="cp"><input id="cAccent" type="color" aria-label="自定义强调颜色"> 强调（*强调字*、装饰、Kiai）</label>
+        </div>
+        <label class="f" for="font">字体
+          <select id="font"><option value="sans">思源黑体 Heavy</option><option value="serif">思源宋体 Heavy</option><option value="dela">Dela Gothic（日文，缺字回退黑体）</option></select>
+        </label>
+        <label class="f" for="size">字号 <em id="sizeVal" style="font-style:normal;font-family:var(--mono)"></em>
+          <input id="size" type="range" min="24" max="80" value="46">
+        </label>
+        <div class="h3">字体效果</div>
+        <div class="preset" id="fxPresets"></div>
+        <div class="fxe">
+          <div class="fxr" data-k="outline"><label class="chk"><input id="outline" type="checkbox" checked> 描边</label>
+            <div class="sub"><input id="olW" type="range" min="2" max="36" aria-label="描边粗细"><input id="olCol" type="color" aria-label="描边颜色"></div></div>
+          <div class="fxr" data-k="shadow"><label class="chk"><input id="shadow" type="checkbox"> 阴影</label>
+            <div class="sub"><span class="mini">距</span><input id="shDist" type="range" min="0" max="30" aria-label="阴影距离"><span class="mini">糊</span><input id="shBlur" type="range" min="0" max="30" aria-label="阴影模糊"><input id="shCol" type="color" aria-label="阴影颜色"></div></div>
+          <div class="fxr" data-k="glow"><label class="chk"><input id="glow" type="checkbox"> 发光</label>
+            <div class="sub"><input id="glR" type="range" min="4" max="44" aria-label="发光范围"><input id="glCol" type="color" aria-label="发光颜色"></div></div>
+          <div class="fxr" data-k="grad"><label class="chk"><input id="grad" type="checkbox"> 渐变</label>
+            <div class="sub"><span class="mini">上</span><input id="grA" type="color" aria-label="渐变上方颜色"><span class="mini">下</span><input id="grB" type="color" aria-label="渐变下方颜色"></div></div>
+        </div>
+        <p class="hint">效果会直接画进字图里，导出后在游戏里一样。和上面一样：选中句子时只改选中的。</p>
+      </section>
+      <section class="pane" id="pane-out" hidden>
+        <div class="stats">
+          <div class="stat"><b id="stSprites">0</b><small>sprite</small></div>
+          <div class="stat"><b id="stLines">0</b><small>命令行</small></div>
+          <div class="stat"><b id="stGlyphs">0</b><small>图片文件</small></div>
+        </div>
+        <div class="lbl"><span>SB load（估算）</span><span>平均 <b id="ldAvg">0</b> · 峰值 <b id="ldPeak">0</b></span></div>
+        <div class="meter" aria-hidden="true"><i class="avg" id="mAvg"></i><i class="peak" id="mPeak"></i><span class="lim" style="left:62.5%"></span></div>
+        <p class="hint">按同屏 sprite 面积 ÷ 640×480 估算，虚线为 5×。</p>
+        <label class="chk"><input id="optimize" type="checkbox" checked> 导出时优化（推荐）</label>
+        <p class="hint" id="optInfo"></p>
+        <p class="hint">优化会删掉不起作用的命令、合并连续的动作、只动一个方向时改用 MX / MY、让不重叠的同图 sprite 共用一个、裁掉字图四周的透明边。画面不变，文件更小、读谱更快、SB load 更低。</p>
+        <div class="h3">各轨道占多少</div>
+        <div class="tstats" id="trackStats"></div>
+        <p class="hint">解压到谱面文件夹，文件名需与谱面一致：</p><div class="fname" id="fname"></div>
+        <div class="row">
+          <button class="btn primary" id="exportZip" type="button">导出 zip</button>
+          <button class="btn" id="copyOsb" type="button">复制 .osb 文本</button>
+        </div>
+        <textarea id="osbOut" readonly hidden aria-label=".osb 文本"></textarea>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel p-tl" aria-label="时间线">
+    <div class="ptabs">
+      <span class="ttl">时间线</span>
+      <span class="tc" id="tc2">00:00:000</span>
+      <span class="tlinfo" id="tlInfo">拖素材到图片轨道；拖片段移动、拖边缘裁剪；歌词同理；滚轮缩放，Shift+滚轮平移</span>
+      <button class="ghost" id="zOut" type="button" aria-label="缩小">－</button>
+      <button class="ghost" id="zIn" type="button" aria-label="放大">＋</button>
+      <button class="ghost" id="zAll" type="button">全体</button>
+      <label class="chk"><input id="zFollow" type="checkbox" checked> 跟随</label>
+    </div>
+    <div class="tlscroll" id="tlscroll">
+      <div class="tlgrid">
+        <div class="rhead"><span class="legend" id="rulerLegend"><button type="button" data-k="kiai" title="Kiai 段。点击显示 / 隐藏"><i style="background:var(--kiai)"></i>Kiai</button><button type="button" data-k="red" title="红线：非继承 timing point（BPM 变化）。点击显示 / 隐藏"><i style="background:var(--redline)"></i>红线</button><button type="button" data-k="green" title="绿线：继承 timing point（滑条速度变化）。点击显示 / 隐藏"><i style="background:var(--greenline)"></i>绿线</button><button type="button" data-k="blue" title="蓝线：谱面编辑器里的书签（Ctrl+B 加的）。点击显示 / 隐藏"><i style="background:var(--bookmark)"></i>蓝线</button></span></div>
+        <canvas class="rcv" id="ruler"></canvas>
+        <div class="theads" id="theads"></div>
+        <canvas class="tcv" id="tracks"></canvas>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<audio id="audio" preload="auto"></audio>

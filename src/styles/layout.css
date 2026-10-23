@@ -1,0 +1,130 @@
+/* 整体布局、面板、页签、面板拖动、菜单栏 */
+*{box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--fg)}
+body{font:13px/1.45 var(--body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+
+.app{height:100%;display:grid;gap:6px;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr);
+  grid-template-areas:"bar" "dock"}
+.dock{grid-area:dock;min-height:0;min-width:0;display:flex}
+.dock>.dsplit,.dock>.dgroup{flex:1}
+.dsplit{display:flex;min-width:0;min-height:0}
+.drow{flex-direction:row}.dcol{flex-direction:column}
+.dcell{min-width:0;min-height:0}
+.dgap{flex:none;width:6px;height:6px}
+nav.tools.dcell{width:40px;flex:none}
+nav.tools.horiz{flex-direction:row;width:auto;height:40px;padding:0 6px;justify-content:flex-start}
+nav.tools.horiz hr{width:0;height:22px;border-top:0;border-left:1px solid var(--line);margin:0 3px}
+.tgrip{padding:2px 0 4px;margin:0;justify-content:center}
+.tgrip svg{width:14px;height:8px}
+nav.tools.horiz .tgrip{padding:0 4px 0 0}
+nav.tools.horiz .tgrip svg{transform:rotate(90deg)}
+.dgut{flex:none;position:relative;touch-action:none}
+.drow>.dgut{width:6px;cursor:col-resize}.dcol>.dgut{height:6px;cursor:row-resize}
+.dgut::after{content:"";position:absolute;inset:0;margin:auto;background:var(--accent);opacity:0;border-radius:2px;transition:opacity .12s}
+.drow>.dgut::after{width:2px}.dcol>.dgut::after{height:2px}
+.dgut:hover::after,.dgut.on::after{opacity:.75}
+/* 拖面板时，面板之间的缝隙更容易对准（放到两个面板中间） */
+.ddragging .drow>.dgut::before{content:"";position:absolute;top:0;bottom:0;left:-10px;right:-10px;z-index:5}.ddragging .dcol>.dgut::before{content:"";position:absolute;left:0;right:0;top:-10px;bottom:-10px;z-index:5}
+.dbody{flex:1;min-height:0;display:flex;flex-direction:column}
+.dfill{flex:1;min-height:0;display:flex;flex-direction:column}
+.dtool{display:flex;align-items:center;gap:8px;flex:1;min-width:0;margin-left:6px}
+.p-tl .dtool{flex-wrap:wrap}
+.p-mon .dtool{overflow:hidden}.p-mon .dtool>*{flex:none}.p-mon .dtool>.sp{flex:1}
+.dghost{position:fixed;z-index:60;pointer-events:none;background:var(--panel3);border:1px solid var(--accent);border-radius:var(--r-ctl);padding:3px 9px;font-size:12px;color:var(--fg);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.dzone{position:fixed;z-index:55;pointer-events:none;background:color-mix(in srgb,var(--accent) 16%,transparent);border:2px solid var(--accent);border-radius:var(--r-panel)}
+body.ddragging,body.ddragging *{cursor:grabbing!important;user-select:none}
+.dgrip{flex:none;display:flex;align-items:center;padding:0 4px 0 0;margin-left:-2px;cursor:grab;color:var(--muted);opacity:.55}
+.dgrip:hover{opacity:1;color:var(--fg)}
+.dgrip svg{width:8px;height:14px;fill:currentColor}
+.dock.narrow .dgrip{display:none}
+.dask{padding:10px;gap:8px;min-width:220px}
+.bar{grid-area:bar;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:2px 4px}
+@media (max-width:1000px){
+  body{overflow:auto;height:auto}html{height:auto}
+  .app{height:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:auto;grid-template-areas:"bar" "dock"}
+  .dock{flex-direction:column;gap:6px}.dock .dgroup{flex:none}.dock .dbody{overflow:visible}
+  .tools{flex-direction:row!important;justify-content:flex-start}
+  .p-tl{height:340px}.p-proj,.p-fx{max-height:none}.p-mon{min-height:0}.pbody{overflow:visible}
+}
+
+.brand{display:flex;align-items:baseline;gap:8px}
+.brand h1{margin:0;font-family:var(--display);font-weight:400;font-size:22px;line-height:1}
+.brand h1 b{color:var(--accent);font-weight:400}
+.brand span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.mapinfo{display:flex;flex-wrap:wrap;gap:4px 12px;font-family:var(--mono);font-size:11px;color:var(--muted);min-width:0;flex:1}
+.mapinfo strong{color:var(--fg);font-weight:600;font-family:var(--body)}
+.tag{display:inline-block;font-family:var(--body);font-size:10px;padding:0 6px;border-radius:999px;border:1px solid var(--kiai);color:var(--kiai)}
+.menubar{display:flex;gap:0;align-items:center;margin-left:4px}
+.menubar>button{background:none;border:0;color:var(--fg);font-size:12.5px;padding:4px 8px;border-radius:var(--r-ctl);cursor:default}
+.menubar>button:hover,.menubar>button[aria-expanded="true"]{background:var(--panel3)}
+.ctxmenu button.subon{background:var(--panel3)}
+.keys{border-collapse:collapse;font-size:12px}.keys td{padding:3px 8px 3px 0;vertical-align:top}.keys kbd{font-family:var(--mono);font-size:11px;color:var(--fg);background:var(--panel3);border-radius:var(--r-sm);padding:1px 5px;white-space:nowrap}
+
+.bar .acts{display:flex;gap:6px;align-items:center}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.ptabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 6px;flex:none;align-items:stretch;min-width:0;overflow-x:auto}
+.ptabs button,.ptabs .ttl{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:7px 8px 6px;cursor:pointer;font-size:12px;white-space:nowrap}
+.ptabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.ptabs .ttl{cursor:default;color:var(--fg)}
+.ptabs .sp{flex:1}
+.pbody{flex:1;min-height:0;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:10px}
+.pane[hidden]{display:none}
+.pane{display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.ghost{border:1px solid var(--line);background:var(--panel2);border-radius:var(--r-ctl);padding:3px 9px;cursor:pointer;font-size:12px;white-space:nowrap}
+.ghost:hover{background:var(--panel3)}
+.ghost:disabled{opacity:.4;cursor:not-allowed}
+.btn{border:1px solid var(--line);background:var(--panel3);border-radius:var(--r-btn);padding:7px 12px;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pill-btn{background:var(--sel);color:#fff;border:0;border-radius:999px;padding:6px 18px;cursor:pointer;font-weight:600}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted)}
+textarea,input[type=number],input[type=text],select{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-ctl);padding:5px 7px;width:100%;min-width:0}
+textarea{font-family:var(--mono);font-size:12px;line-height:1.55;min-height:180px;resize:vertical;flex:1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.row>*{flex:1 1 110px;min-width:0}
+.hint{font-size:11px;color:var(--muted);margin:0}
+.hint code{font-family:var(--mono);background:var(--panel2);border:1px solid var(--line);border-radius:var(--r-sm);padding:0 3px;color:var(--fg)}
+.chk{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer}
+.chk input{width:15px;height:15px}
+/* 复选框：跟随主题的圆角方块 + 对勾 */
+input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;width:16px;height:16px;margin:0;border:1.5px solid var(--muted);border-radius:var(--r-check);background:transparent;cursor:pointer;position:relative;transition:background .15s,border-color .15s;vertical-align:-3px}
+input[type=checkbox]:hover{border-color:var(--fg)}
+input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+input[type=checkbox]:checked::after{content:"";position:absolute;left:4.5px;top:1.5px;width:4px;height:8px;border:solid var(--accent-fg);border-width:0 2px 2px 0;transform:rotate(45deg)}
+input[type=checkbox]:disabled{opacity:.45;cursor:not-allowed}
+input[type=checkbox]:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+/* 滑块：细轨道 + 已填充部分 + 圆形把手（--p 由 ui/base.js 根据数值更新） */
+input[type=range]{appearance:none;-webkit-appearance:none;width:100%;height:18px;background:transparent;cursor:pointer;margin:0;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:999px;background:linear-gradient(to right,var(--accent) var(--p),var(--track) var(--p))}
+input[type=range]::-moz-range-track{height:4px;border-radius:999px;background:var(--track)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:999px;background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--accent);transition:transform .12s}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--accent)}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.25)}
+input[type=range]:focus-visible{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 40%,transparent)}
+input[type=range]:disabled{opacity:.45;cursor:not-allowed}
+.h3{margin:2px 0 0;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+
+.fsbtn{display:inline-flex;align-items:center;gap:6px}
+.fsbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* 颜色选择框：跟随主题圆角，去掉浏览器默认的灰框 */
+input[type=color]{-webkit-appearance:none;appearance:none;width:44px;height:28px;padding:3px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--bg);cursor:pointer}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:0;border-radius:max(2px,calc(var(--r-ctl) - 3px))}
+input[type=color]::-moz-color-swatch{border:0;border-radius:max(2px,calc(var(--r-ctl) - 3px))}
+
+/* 预览页签显示谱面名和难度，太长就省略 */
+.montab{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 按钮里放了很长的名字（比如谱面文件夹名）时，超出部分用省略号，不顶出面板 */
+#reconnect{flex:1 1 100%;min-width:0;max-width:100%;text-align:left;overflow:hidden;text-overflow:ellipsis}
+#folderInfo{overflow-wrap:anywhere}

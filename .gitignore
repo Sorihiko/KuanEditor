@@ -1,0 +1,26 @@
+# 桌面版打包出来的东西（Kuan.exe 等，太大，发到 GitHub Releases 而不是放进仓库）
+dist/
+electron/build/
+electron/dl/
+Output/
+*.zip
+*.zip.0*
+
+# 由 electron/make-app.py 从 Kuan.html 生成
+electron/app/index.html
+
+# 谱面、项目文件不放进仓库
+*.osu
+*.osb
+*.kuan
+
+# Python / 系统文件
+__pycache__/
+*.pyc
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 自己看的开发笔记，不传
+BUILD.md
+electron/README.md

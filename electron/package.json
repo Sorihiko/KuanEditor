@@ -1,0 +1,10 @@
+{
+  "name": "kuan-editor",
+  "productName": "Kuan",
+  "version": "0.9.0",
+  "description": "宽 Kuan — osu! storyboard editor",
+  "main": "main.js",
+  "author": "Zheyao Li",
+  "license": "UNLICENSED",
+  "private": true
+}

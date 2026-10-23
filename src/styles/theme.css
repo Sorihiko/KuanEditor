@@ -1,0 +1,39 @@
+/* 配色与字体变量 */
+/* Layout: a dark editing suite after Premiere — project bin, tool strip, program monitor and effect controls on top, a full-width multi-track timeline below. Deliberately single (dark) theme. */
+:root{
+  --bg:#0e0f11; --panel:#1a1b1f; --panel2:#212328; --panel3:#2a2d34; --line:#33363e; --fg:#e4e6eb; --muted:#8d929e; --dim:#5e636e;
+  --accent:#ec4f86; --accent-fg:#ffffff; --sel:#4b9dff; --kiai:#f2a43c; --redline:#ff6464; --greenline:#4fd36b; --bookmark:#3d7bff;
+  --st-slam:#c9456f; --st-scatter:#2f8fbd; --st-vertical:#7b62d1; --clip:#2c5a8c; --clip2:#24496f; --hit:#8a5a2a; --spec:#45367a; --part:#246e63; --imp:#4d5a36; --st-karaoke:#b8862a;
+  --ok:#55c98a; --warn:#f2b24c; --bad:#ff6b7d;
+  --display:"Dela Gothic One","Noto Sans SC",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sb-thumb:#3a3d45; --sb-hover:#4d515b;   /* 滚动条 */
+  --track:#3a3d45; --r-check:4px;   /* 滑块轨道颜色、复选框圆角 */
+  --r-panel:6px; --r-btn:6px; --r-ctl:5px; --r-item:6px; --r-menu:8px; --r-pop:8px; --r-tool:5px; --r-sm:4px; --r-clip:4;   /* 圆角（--r-clip 是时间轴片段，单位像素） */
+  color-scheme:dark;
+}
+/* 主题「莓果」：带紫红色调的深色 + 浅粉主色 + 大圆角（参考 osu! skin mixer 的配色） */
+:root[data-theme="berry"]{
+  --bg:#1b1619; --panel:#2b2229; --panel2:#352a32; --panel3:#45363f; --line:#4a3b44; --fg:#efe1e8; --muted:#a5959e; --dim:#6f6068;
+  --accent:#efb8c8; --accent-fg:#3d2531; --sel:#9fc2ff;
+  --clip:#633b48; --clip2:#4f2f3a; --hit:#7d5534; --spec:#4f3d78; --part:#2f6359; --imp:#55603e;
+  --sb-thumb:#56424d; --sb-hover:#7a5d6c; --track:#56424d; --r-check:5px;
+  --r-panel:14px; --r-btn:999px; --r-ctl:8px; --r-item:10px; --r-menu:14px; --r-pop:20px; --r-tool:999px; --r-sm:7px; --r-clip:7;
+}
+:root[data-theme="berry"] .panel{background:radial-gradient(130% 70% at 0% 0%,rgba(255,190,220,.045),transparent 60%),var(--panel);box-shadow:0 2px 10px rgba(0,0,0,.25)}
+:root[data-theme="berry"] .ghost{background:var(--panel3);border-color:transparent}
+:root[data-theme="berry"] .ghost:hover{background:#523f4a}
+:root[data-theme="berry"] .btn{padding:7px 16px}
+:root[data-theme="berry"] .ctxmenu{box-shadow:0 14px 40px rgba(0,0,0,.5)}
+:root[data-theme="berry"] .popform{border-radius:var(--r-pop);padding:16px 18px}
+
+/* 滚动条跟随主题 */
+/* Chrome / Edge 用下面的 ::-webkit-scrollbar（可以做圆角、去掉上下箭头）；只有不支持它的浏览器（Firefox）才用标准写法 */
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--sb-thumb) transparent}}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--sb-thumb);border-radius:999px;border:2px solid transparent;background-clip:padding-box;min-height:28px}
+::-webkit-scrollbar-thumb:hover{background:var(--sb-hover);border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+.ptabs::-webkit-scrollbar{height:4px}.ptabs::-webkit-scrollbar-thumb{border:0}
